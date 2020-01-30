@@ -1,0 +1,132 @@
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.header {
+  padding: 15px;
+}
+
+.logo {
+  width: 45px;
+}
+
+.header h1 {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.vertical.header {
+  border-bottom: solid 1px #ccc;
+  width: 100%;
+}
+
+.horizontal.header {
+  display: flex;
+  align-items: center;
+  background-color: #2e8ace;
+  padding: 5px 15px;
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+}
+
+.horizontal.header h1 {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.horizontal.header .logo {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.search-wrapper {
+  padding: 15px 0;
+}
+
+.examples {
+  padding: 15px;
+  text-align: start;
+}
+
+.search-results {
+  text-align: center;
+  flex-direction: column;
+}
+
+.search-results ul {
+  list-style: none;
+}
+
+.navigation-wrapper {
+  background-color: #fff;
+  position: fixed;
+  top: 45px;
+  z-index: 100;
+  width: 100%;
+  border-bottom: solid 2px #bbbbbb 100%;
+}
+
+.navigation-wrapper .ant-tabs-bar,
+.ant-tabs-nav-container {
+  margin-bottom: 0;
+}
+
+.content-wrapper {
+  padding: 120px 30px;
+}
+
+.result-section {
+  margin-bottom: 45px;
+}
+
+.result-section .content {
+  padding-left: 30px;
+}
+
+.sub-section {
+  margin-bottom: 30px;
+}
+
+.section-header h2 {
+  padding-left: 15px;
+  border-left: solid 8px #2e8ace;
+}
+
+.sub-section h3 {
+  padding-left: 15px;
+  border-left: solid 8px #101010;
+}
+
+.ant-table-middle
+  > .ant-table-content
+  > .ant-table-body
+  > table
+  > .ant-table-tbody
+  > tr
+  > td,
+th,
+td {
+  padding: 5px 30px 5px 5px !important;
+}
+
+tr {
+  border-bottom: solid 1px #bbbbbb;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #d9e8f2bf;
+}
+
+.ant-alert-info {
+  background-color: transparent !important;
+  border: none;
+  border-radius: 0;
+}
+
+.search-input {
+  width: 300px;
+}
