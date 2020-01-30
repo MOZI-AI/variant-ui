@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { message } from "antd";
 import logo from "../../assets/logo.png";
 
-const geneRegex = [/^[a-zA-Z]+$/, /^[1-9]\d*$/, /^ENSG/];
+const geneRegex = [/^[a-zA-Z1-9]+$/, /^[1-9]\d*$/, /^ENSG/];
 const variantRegex = [
   /^rs[0-9]*$/,
   /(chr)?([\d|XYMTxymt]+):[gG]\.(\d+)([GCTAgcta])?>([GCTAgcta])/,

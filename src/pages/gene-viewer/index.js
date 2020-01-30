@@ -80,7 +80,7 @@ const GeneAnnotation = props => {
 
   const constructURL = t => {
     // Gene symbol
-    if (/^[a-zA-Z]+$/.test(t)) {
+    if (/^[a-zA-Z0-9]+$/.test(t)) {
       return `/annotate/gene/${t.toUpperCase()}`;
     }
     // Entrez id
@@ -139,16 +139,37 @@ const GeneAnnotation = props => {
                     replace
                   >{`${v.chrom}:${v.pos}:${v.ref}/${v.alt}`}</Link>
                 ),
-                HGVS: v.hgvs,
-                rsID: v.id,
+                HGVS: v.effect ? v.effect.hgvsNomination : "-",
+                rsID: v.id || "-",
                 interVar: v.acmg.verdict,
                 exonic: v.acmg.exonicFunction,
                 disease: v.acmg.diseaseInfos
                   ? v.acmg.diseaseInfos.map(d => d.diseaseName).join(" , ")
                   : "-",
                 phenotype: "?",
-                orphanet: "?",
-                omim: "?",
+                orphanet: v.acmg.diseaseInfos
+                  ? v.acmg.diseaseInfos.map(d => d.diseaseId).join(" , ")
+                  : "-",
+                omim: v.acmg.diseaseInfos ? (
+                  <>
+                    {v.acmg.diseaseInfos
+                      .reduce((a, d) => [...a, ...d.omimIds], [])
+                      .map(o => (
+                        <>
+                          <a
+                            target="_blank"
+                            key={o}
+                            href={`https://omim.org/entry/${o}`}
+                          >
+                            {o}
+                          </a>{" "}
+                          ,{" "}
+                        </>
+                      ))}{" "}
+                  </>
+                ) : (
+                  "-"
+                ),
                 Phenotype_MIM: "?",
                 exac: "?",
                 polyphen: "?",

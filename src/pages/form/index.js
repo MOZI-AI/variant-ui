@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { message } from "antd";
 import logo from "../../assets/logo.png";
 
-const geneRegex = [/^[a-zA-Z]+$/, /^[1-9]\d*$/, /^ENSG/];
+const geneRegex = [/^[a-zA-Z1-9]+$/, /^[1-9]\d*$/, /^ENSG/];
 const variantRegex = [
   /^rs[0-9]*$/,
   /(chr)?([\d|XYMTxymt]+):[gG]\.(\d+)([GCTAgcta])?>([GCTAgcta])/,
@@ -21,18 +21,23 @@ const AnnotationForm = ({ onSubmit }) => {
 
   // When the search token changes, redirect to the either the gene viwer or variant viewer page depending on what the token is
   const handleSubmit = () => {
-    // Check if the token is a gene
-    if (geneRegex.reduce((a, r) => a || r.test(searchToken), false)) {
-      history.push(`/gene/${searchToken}`);
-    }
     // Check if the token is a variant
-    else if (variantRegex.reduce((a, r) => a || r.test(searchToken), false)) {
+    if (variantRegex.reduce((a, r) => a || r.test(searchToken), false)) {
       history.push(`/variant/${searchToken}`);
     } else {
-      message.error(
-        "The search token is not recognized. Make sure it is a valid token."
-      );
+      history.push(`/gene/${searchToken}`);
     }
+    // Check if the token is a gene
+    // if (geneRegex.reduce((a, r) => a || r.test(searchToken), false)) {
+    //   history.push(`/gene/${searchToken}`);
+    // }
+    // else if (variantRegex.reduce((a, r) => a || r.test(searchToken), false)) {
+    //   history.push(`/variant/${searchToken}`);
+    // } else {
+    //   message.error(
+    //     "The search token is not recognized. Make sure it is a valid token."
+    //   );
+    // }
   };
 
   return (

@@ -387,16 +387,18 @@ function AnnotationResult({}) {
         {result.clinvar ? (
           <div className="sub-section">
             <h3>Publication IDs</h3>
-            {result.clinvar.pumeds.map(p => (
-              <a
-                key={p}
-                href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                target="_blank"
-                style={{ marginRight: 30 }}
-              >
-                {p}
-              </a>
-            ))}
+            {result.clinvar.pumeds
+              ? result.clinvar.pumeds.map(p => (
+                  <a
+                    key={p}
+                    href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                    target="_blank"
+                    style={{ marginRight: 30 }}
+                  >
+                    {p}
+                  </a>
+                ))
+              : null}
           </div>
         ) : null}
       </div>
@@ -438,15 +440,17 @@ function AnnotationResult({}) {
                     </td>
                     <td>{d.diseaseDBName}</td>
                     <td>
-                      {result.clinvar.pumeds.map(p => (
-                        <a
-                          key={p}
-                          href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                          style={{ display: "block" }}
-                        >
-                          {p}
-                        </a>
-                      ))}
+                      {result.clinvar.pumeds
+                        ? result.clinvar.pumeds.map(p => (
+                            <a
+                              key={p}
+                              href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                              style={{ display: "block" }}
+                            >
+                              {p}
+                            </a>
+                          ))
+                        : null}
                     </td>
                   </tr>
                 ))}
