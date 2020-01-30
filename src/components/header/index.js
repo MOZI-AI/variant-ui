@@ -21,13 +21,13 @@ const Header = props => {
 
   // When the search token changes, redirect to the either the gene viwer or variant viewer page depending on what the token is
   const handleSubmit = () => {
-    // Check if the token is a gene
-    if (geneRegex.reduce((a, r) => a || r.test(searchToken), false)) {
-      history.push(`/gene/${searchToken}`);
-    }
     // Check if the token is a variant
-    else if (variantRegex.reduce((a, r) => a || r.test(searchToken), false)) {
+    if (variantRegex.reduce((a, r) => a || r.test(searchToken), false)) {
       history.push(`/variant/${searchToken}`);
+    }
+    // Check if the token is a gene
+    else if (geneRegex.reduce((a, r) => a || r.test(searchToken), false)) {
+      history.push(`/gene/${searchToken}`);
     } else {
       message.error(
         "The search token is not recognized. Make sure it is a valid token."

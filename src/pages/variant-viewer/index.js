@@ -63,7 +63,6 @@ const POPULATION_FREQUENCY = [
 function AnnotationResult({}) {
   const { id } = useParams();
   const [populations, setPopulations] = useState(undefined);
-  const [searchToken, setSearchToken] = useState(undefined);
   const [fetching, setFetching] = useState(false);
   const [matchingIDs, setMatchingIDs] = useState([]);
   const [result, setResult] = useState(undefined);
@@ -71,7 +70,7 @@ function AnnotationResult({}) {
   const constructURL = t => {
     // rsID
     if (/^rs[0-9]*$/.test(t)) {
-      return `/annotate/${t.toLowerCase()}`;
+      return `/annotate/variant/${t.toLowerCase()}`;
     }
     // HGVS Id
     else if (
@@ -86,9 +85,9 @@ function AnnotationResult({}) {
       ) ||
       /(chr)?([\d|XYMTxymt]+):[gG]\.(\d+)_(\d+)ins(\d+)_(\d+)inv/.test(t)
     ) {
-      return `/annotate/?hgvs=${t}`;
+      return `/annotate/variant/?hgvs=${t}`;
     } else {
-      return `/annotate/?hgvs=${t}`;
+      return `/annotate/variant/?hgvs=${t}`;
     }
   };
 

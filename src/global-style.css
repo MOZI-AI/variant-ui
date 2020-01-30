@@ -129,4 +129,5 @@ tbody tr:nth-child(odd) {
 
 .search-input {
   width: 300px;
+  padding-left: 15px;
 }

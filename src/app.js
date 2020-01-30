@@ -10,7 +10,7 @@ import "./global-style.css";
 
 function App(props) {
   axios.defaults.baseURL =
-    process.env.SERVER_ADDR || "http://88.198.22.185:3200/";
+    process.env.SERVER_ADDR || "https://88.198.22.185:3200/";
 
   return (
     <Router>
