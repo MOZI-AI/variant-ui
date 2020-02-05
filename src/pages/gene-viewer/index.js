@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Table, Alert, Skeleton } from "antd";
+import React, { useEffect, useState, Fragment } from "react";
+import { Table, Skeleton, message } from "antd";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/header";
 
-const GeneAnnotationColumns = [
+const GeneViewerColumns = [
   {
     title: "Variant",
     dataIndex: "variant",
@@ -72,7 +72,7 @@ const GeneAnnotationColumns = [
   }
 ];
 
-const GeneAnnotation = props => {
+const GeneViewer = props => {
   const { id } = useParams();
   const [fetching, setFetching] = useState(false);
   const [matchingIDs, setMatchingIDs] = useState([]);
@@ -98,8 +98,6 @@ const GeneAnnotation = props => {
     axios
       .get(constructURL(id.trim()))
       .then(function(response) {
-        // handle success
-        console.log(response.data);
         setResult(response.data);
       })
       .catch(function(error) {
@@ -113,6 +111,8 @@ const GeneAnnotation = props => {
             .trim()
             .split(",");
           setMatchingIDs(IDs);
+        } else {
+          message.error(error.response ? error.response.data : error.message);
         }
       })
       .finally(function() {
@@ -130,13 +130,14 @@ const GeneAnnotation = props => {
           </>
         ) : result ? (
           <>
+            <h2>Variants for {id}</h2>
             <Table
-              columns={GeneAnnotationColumns}
-              dataSource={result.variants.map(v => ({
+              columns={GeneViewerColumns}
+              dataSource={result.variants.map((v, j) => ({
+                key: `variant${j}`,
                 variant: (
                   <Link
                     to={`/variant/${v.hgvs}`}
-                    replace
                   >{`${v.chrom}:${v.pos}:${v.ref}/${v.alt}`}</Link>
                 ),
                 HGVS: v.effect ? v.effect.hgvsNomination : "-",
@@ -154,17 +155,16 @@ const GeneAnnotation = props => {
                   <>
                     {v.acmg.diseaseInfos
                       .reduce((a, d) => [...a, ...d.omimIds], [])
-                      .map(o => (
-                        <>
+                      .map((o, i) => (
+                        <Fragment key={`omim${i}`}>
                           <a
                             target="_blank"
-                            key={o}
                             href={`https://omim.org/entry/${o}`}
                           >
                             {o}
                           </a>{" "}
                           ,{" "}
-                        </>
+                        </Fragment>
                       ))}{" "}
                   </>
                 ) : (
@@ -183,23 +183,21 @@ const GeneAnnotation = props => {
               Found more than one gene for symbol PAH with the following ids:
             </h3>
             <ul>
-              {matchingIDs.map(i => (
-                <li>
-                  <Link replace to={`/gene/${i}`}>
-                    {i}
+              {matchingIDs.map((g, i) => (
+                <li key={`gene${i}`}>
+                  <Link replace to={`/gene/${g}`}>
+                    {g}
                   </Link>
                 </li>
               ))}
             </ul>
           </>
         ) : (
-          <>
-            <Alert message="Other error" description="try again" />
-          </>
+          <h2>Start by seaching for a gene or a variant</h2>
         )}
       </div>
     </>
   );
 };
 
-export default GeneAnnotation;
+export default GeneViewer;

@@ -168,7 +168,7 @@ function AnnotationResult({}) {
             </tr>
             <tr>
               <td>HGVS nomination</td>
-              <td>{result.effect.hgvsNomination}</td>
+              <td>{result.effect ? result.effect.hgvsNomination : "-"}</td>
             </tr>
           </tbody>
         </table>
@@ -191,12 +191,15 @@ function AnnotationResult({}) {
                 message={
                   <Row>
                     <Col md={12}>
-                      <Statistic title="Class" value={result.acmg.verdict} />
+                      <Statistic
+                        title="Class"
+                        value={result.acmg ? result.acmg.verdict : "-"}
+                      />
                     </Col>
                     <Col md={12}>
                       <Statistic
                         title="ExonicFunc"
-                        value={result.acmg.exonicFunction}
+                        value={result.acmg ? result.acmg.exonicFunction : "-"}
                       />
                     </Col>
                   </Row>
@@ -204,7 +207,6 @@ function AnnotationResult({}) {
               />
             </Col>
           </Row>
-
           <table>
             <thead>
               <tr>
@@ -404,61 +406,58 @@ function AnnotationResult({}) {
     </div>
   );
 
-  const renderClinicalInterpretation = () =>
-    result.clinvar &&
-    result.clinvar.annotation &&
-    result.clinvar.annotation.diseaseInfos ? (
-      <div className="result-section">
-        <div className="section-header">
-          <h2>Clinical Interpretation</h2>
-        </div>
-        <div className="content">
-          <div className="sub-section">
-            <h3>ClinVar</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Clinical significance</th>
-                  <th>Review status</th>
-                  <th>Disease</th>
-                  <th>Pubmed</th>
+  const renderClinicalInterpretation = () => (
+    <div className="result-section">
+      <div className="section-header">
+        <h2>Clinical Interpretation</h2>
+      </div>
+      <div className="content">
+        <div className="sub-section">
+          <h3>ClinVar</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Clinical significance</th>
+                <th>Review status</th>
+                <th>Disease</th>
+                <th>Pubmed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.clinvar.annotation.diseaseInfos.map((d, i) => (
+                <tr key={`disease${i}`}>
+                  <td>
+                    {d.significance.map((s, j) => (
+                      <p key={`significance${j}`}>{s}</p>
+                    ))}
+                  </td>
+                  <td>
+                    {d.revisionStatus.map((r, k) => (
+                      <p key={`revision${k}`}>{r}</p>
+                    ))}
+                  </td>
+                  <td>{d.diseaseDBName}</td>
+                  <td>
+                    {result.clinvar.pumeds
+                      ? result.clinvar.pumeds.map(p => (
+                          <a
+                            key={p}
+                            href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                            style={{ display: "block" }}
+                          >
+                            {p}
+                          </a>
+                        ))
+                      : null}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {result.clinvar.annotation.diseaseInfos.map((d, i) => (
-                  <tr key={`disease${i}`}>
-                    <td>
-                      {d.significance.map((s, j) => (
-                        <p key={`significance${j}`}>{s}</p>
-                      ))}
-                    </td>
-                    <td>
-                      {d.revisionStatus.map((r, k) => (
-                        <p key={`revision${k}`}>{r}</p>
-                      ))}
-                    </td>
-                    <td>{d.diseaseDBName}</td>
-                    <td>
-                      {result.clinvar.pumeds
-                        ? result.clinvar.pumeds.map(p => (
-                            <a
-                              key={p}
-                              href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                              style={{ display: "block" }}
-                            >
-                              {p}
-                            </a>
-                          ))
-                        : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    ) : null;
+    </div>
+  );
 
   const renderPopulationFrequency = () =>
     populations.length ? (
@@ -567,8 +566,11 @@ function AnnotationResult({}) {
       </div>
       <div className="content-wrapper">
         {renderSummary()}
-        {renderACMGclassification()}
-        {renderClinicalInterpretation()}
+        {result.acmg && renderACMGclassification()}
+        {result.clinvar &&
+          result.clinvar.annotation &&
+          result.clinvar.annotation.diseaseInfos &&
+          renderClinicalInterpretation()}
         {populations !== undefined && renderPopulationFrequency()}
         <Row>
           <Col md={12}>{renderFunctionalPrediction()}</Col>
