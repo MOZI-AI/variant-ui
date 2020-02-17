@@ -187,7 +187,7 @@ function AnnotationResult({}) {
               <td>{`${result.chrom}:${result.pos}`}</td>
             </tr>
             <tr>
-              <td>Allel (ref/alt)</td>
+              <td>Allele (ref/alt)</td>
               <td>{`${result.ref}/${result.alt}`}</td>
             </tr>
             <tr>

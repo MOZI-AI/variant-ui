@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-const igv = require('igv')
+const igv = require('igv');
 
 const Visualizer = ({ }) => {
     const visualizerWrapper = useRef();
@@ -39,9 +39,9 @@ const Visualizer = ({ }) => {
             })
 
 
-    }, [])
+    }, []);
 
     return <div ref={visualizerWrapper}></div>
-}
+};
 
 export default Visualizer
