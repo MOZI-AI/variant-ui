@@ -180,7 +180,7 @@ function AnnotationResult({}) {
         <h2>Summary</h2>
       </div>
       <div className="content">
-        <Visualizer />
+        <Visualizer chromosome={result.chrom} position={result.pos} />
         <table>
           <tbody>
             <tr>
