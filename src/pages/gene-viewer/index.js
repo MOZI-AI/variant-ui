@@ -3,6 +3,15 @@ import { Table, Skeleton, message } from "antd";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/header";
+import Verdict from "../../components/verdict";
+
+const InterVarClassOrder = {
+  pathogenic: 5,
+  "likely pathogenic": 4,
+  "uncertain significance": 3,
+  "likely benign": 2,
+  benign: 1
+};
 
 const GeneViewerColumns = [
   {
@@ -23,7 +32,11 @@ const GeneViewerColumns = [
   {
     title: "InterVar.class",
     dataIndex: "interVar",
-    key: "interVar"
+    key: "interVar",
+    sorter: (a, b) =>
+      InterVarClassOrder[a.acmg.verdict.toLowerCase()] -
+      InterVarClassOrder[b.acmg.verdict.toLowerCase()],
+    sortDirections: ["descend"]
   },
   {
     title: "ExonicFunc",
@@ -132,6 +145,7 @@ const GeneViewer = props => {
           <>
             <h2>Variants for {id}</h2>
             <Table
+              pagination={{ pageSize: 3 }}
               columns={GeneViewerColumns}
               dataSource={result.variants.map((v, j) => ({
                 key: `variant${j}`,
@@ -142,7 +156,7 @@ const GeneViewer = props => {
                 ),
                 HGVS: v.effect ? v.effect.hgvsNomination : "-",
                 rsID: v.id || "-",
-                interVar: v.acmg.verdict,
+                interVar: <Verdict verdict={v.acmg.verdict} />,
                 exonic: v.acmg.exonicFunction,
                 disease: v.acmg.diseaseInfos
                   ? v.acmg.diseaseInfos.map(d => d.diseaseName).join(" , ")

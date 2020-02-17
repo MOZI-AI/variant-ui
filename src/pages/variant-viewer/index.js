@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import Header from "../../components/header";
+import Visualizer from '../../components/visualizer'
 
 const FUNCTIONAL_PREDICTION = [
   {
@@ -60,7 +61,7 @@ const POPULATION_FREQUENCY = [
   }
 ];
 
-function AnnotationResult({}) {
+function AnnotationResult({ }) {
   const { id } = useParams();
   const [populations, setPopulations] = useState(undefined);
   const [fetching, setFetching] = useState(false);
@@ -96,11 +97,11 @@ function AnnotationResult({}) {
     setResult(undefined);
     axios
       .get(constructURL(id.trim()))
-      .then(function(response) {
+      .then(function (response) {
         // handle success
         setResult(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (
           error.response &&
           error.response.data &&
@@ -118,7 +119,7 @@ function AnnotationResult({}) {
           message.error(error.response ? error.response.data : error.message);
         }
       })
-      .finally(function() {
+      .finally(function () {
         setFetching(false);
       });
   }, [id]);
@@ -390,15 +391,15 @@ function AnnotationResult({}) {
             <h3>Publication IDs</h3>
             {result.clinvar.pumeds
               ? result.clinvar.pumeds.map(p => (
-                  <a
-                    key={p}
-                    href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                    target="_blank"
-                    style={{ marginRight: 30 }}
-                  >
-                    {p}
-                  </a>
-                ))
+                <a
+                  key={p}
+                  href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                  target="_blank"
+                  style={{ marginRight: 30 }}
+                >
+                  {p}
+                </a>
+              ))
               : null}
           </div>
         ) : null}
@@ -440,14 +441,14 @@ function AnnotationResult({}) {
                   <td>
                     {result.clinvar.pumeds
                       ? result.clinvar.pumeds.map(p => (
-                          <a
-                            key={p}
-                            href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                            style={{ display: "block" }}
-                          >
-                            {p}
-                          </a>
-                        ))
+                        <a
+                          key={p}
+                          href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                          style={{ display: "block" }}
+                        >
+                          {p}
+                        </a>
+                      ))
                       : null}
                   </td>
                 </tr>
@@ -470,32 +471,32 @@ function AnnotationResult({}) {
             <Col md={12}>
               {populations.filter(p => p.database === "thousandGenome").length >
                 0 && (
-                <div className="sub-header">
-                  <h3>Thousand Genome</h3>
-                  <Table
-                    size="middle"
-                    bordered={true}
-                    columns={POPULATION_FREQUENCY}
-                    dataSource={populations.filter(
-                      p => p.database === "thousandGenome"
-                    )}
-                  />
-                </div>
-              )}
+                  <div className="sub-header">
+                    <h3>Thousand Genome</h3>
+                    <Table
+                      size="middle"
+                      bordered={true}
+                      columns={POPULATION_FREQUENCY}
+                      dataSource={populations.filter(
+                        p => p.database === "thousandGenome"
+                      )}
+                    />
+                  </div>
+                )}
               {populations.filter(p => p.database === "gnomadExome").length >
                 0 && (
-                <div className="sub-header">
-                  <h3>Gnomad Exome</h3>
-                  <Table
-                    size="middle"
-                    bordered={true}
-                    columns={POPULATION_FREQUENCY}
-                    dataSource={populations.filter(
-                      p => p.database === "gnomadExome"
-                    )}
-                  />
-                </div>
-              )}
+                  <div className="sub-header">
+                    <h3>Gnomad Exome</h3>
+                    <Table
+                      size="middle"
+                      bordered={true}
+                      columns={POPULATION_FREQUENCY}
+                      dataSource={populations.filter(
+                        p => p.database === "gnomadExome"
+                      )}
+                    />
+                  </div>
+                )}
             </Col>
           </Row>
         </div>
@@ -589,10 +590,10 @@ function AnnotationResult({}) {
       ) : matchingIDs.length ? (
         renderMatchingIDs()
       ) : (
-        <div className="content-wrapper">
-          <h2>Start by seaching for a gene or a variant</h2>
-        </div>
-      )}
+              <div className="content-wrapper">
+                <h2>Start by seaching for a gene or a variant</h2>
+              </div>
+            )}
       {}
     </>
   );
