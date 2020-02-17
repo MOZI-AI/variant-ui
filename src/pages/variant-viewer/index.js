@@ -8,12 +8,14 @@ import {
   Alert,
   Tag,
   Tabs,
-  message
+  message,
+  Typography
 } from "antd";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import Header from "../../components/header";
-import Visualizer from '../../components/visualizer'
+import Visualizer from "../../components/visualizer";
+import Verdict from "../../components/verdict";
 
 const FUNCTIONAL_PREDICTION = [
   {
@@ -40,28 +42,51 @@ const POPULATION_FREQUENCY = [
     key: "population"
   },
   {
-    title: "homAlt",
+    title: "HomAlt",
     dataIndex: "homAlt",
     key: "homAlt"
   },
   {
-    title: "af",
+    title: "AF",
     dataIndex: "af",
     key: "af"
   },
   {
-    title: "ac",
+    title: "AC",
     dataIndex: "ac",
     key: "ac"
   },
   {
-    title: "an",
+    title: "AN",
     dataIndex: "an",
     key: "an"
   }
 ];
 
-function AnnotationResult({ }) {
+const TRANSCRIPT = [
+  {
+    title: "Transcript ID",
+    dataIndex: "transcriptId",
+    key: "transcriptId"
+  },
+  {
+    title: "Exon",
+    dataIndex: "exon",
+    key: "exon"
+  },
+  {
+    title: "cdsChange",
+    dataIndex: "cdsChange",
+    key: "cdsChange"
+  },
+  {
+    title: "Protein change",
+    dataIndex: "proteinChange",
+    key: "proteinChange"
+  }
+];
+
+function AnnotationResult({}) {
   const { id } = useParams();
   const [populations, setPopulations] = useState(undefined);
   const [fetching, setFetching] = useState(false);
@@ -97,11 +122,11 @@ function AnnotationResult({ }) {
     setResult(undefined);
     axios
       .get(constructURL(id.trim()))
-      .then(function (response) {
+      .then(function(response) {
         // handle success
         setResult(response.data);
       })
-      .catch(function (error) {
+      .catch(function(error) {
         if (
           error.response &&
           error.response.data &&
@@ -119,7 +144,7 @@ function AnnotationResult({ }) {
           message.error(error.response ? error.response.data : error.message);
         }
       })
-      .finally(function () {
+      .finally(function() {
         setFetching(false);
       });
   }, [id]);
@@ -143,8 +168,14 @@ function AnnotationResult({ }) {
     }
   });
 
+  const navigateToSection = tab => {
+    const section = document.getElementById(tab);
+    var sectionOffset = section.offsetTop;
+    window.scrollTo(0, sectionOffset - 120);
+  };
+
   const renderSummary = () => (
-    <div className="result-section">
+    <div className="result-section" id="summary">
       <div className="section-header">
         <h2>Summary</h2>
       </div>
@@ -168,8 +199,8 @@ function AnnotationResult({ }) {
               <td>{result.gene}</td>
             </tr>
             <tr>
-              <td>HGVS nomination</td>
-              <td>{result.effect ? result.effect.hgvsNomination : "-"}</td>
+              <td>Type</td>
+              <td>{result.bioType ? result.bioType : "-"}</td>
             </tr>
           </tbody>
         </table>
@@ -178,7 +209,7 @@ function AnnotationResult({ }) {
   );
 
   const renderACMGclassification = () => (
-    <div className="result-section">
+    <div className="result-section" id="acmg">
       <div className="section-header">
         <h2>ACMG Classification</h2>
       </div>
@@ -192,15 +223,20 @@ function AnnotationResult({ }) {
                 message={
                   <Row>
                     <Col md={12}>
-                      <Statistic
-                        title="Class"
-                        value={result.acmg ? result.acmg.verdict : "-"}
-                      />
+                      <Typography.Paragraph type="secondary">
+                        Class
+                      </Typography.Paragraph>
+
+                      {result.acmg ? (
+                        <Verdict size="large" verdict={result.acmg.verdict} />
+                      ) : (
+                        "-"
+                      )}
                     </Col>
                     <Col md={12}>
                       <Statistic
                         title="ExonicFunc"
-                        value={result.acmg ? result.acmg.exonicFunction : "-"}
+                        value={result.acmg ? result.exonicFunction : "-"}
                       />
                     </Col>
                   </Row>
@@ -391,15 +427,15 @@ function AnnotationResult({ }) {
             <h3>Publication IDs</h3>
             {result.clinvar.pumeds
               ? result.clinvar.pumeds.map(p => (
-                <a
-                  key={p}
-                  href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                  target="_blank"
-                  style={{ marginRight: 30 }}
-                >
-                  {p}
-                </a>
-              ))
+                  <a
+                    key={p}
+                    href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                    target="_blank"
+                    style={{ marginRight: 30 }}
+                  >
+                    {p}
+                  </a>
+                ))
               : null}
           </div>
         ) : null}
@@ -407,8 +443,52 @@ function AnnotationResult({ }) {
     </div>
   );
 
+  const renderTranscripts = () => (
+    <div className="result-section" id="transcripts">
+      <div className="section-header">
+        <h2>Transcripts</h2>
+      </div>
+      <div className="content">
+        <div className="sub-section">
+          <h3>RefSeq Transcripts</h3>
+          <Row>
+            <Col md={12}>
+              <Table
+                size="middle"
+                bordered={true}
+                pagination={false}
+                columns={TRANSCRIPT}
+                dataSource={result.refSeqTranscripts.map((t, i) => ({
+                  key: `ref_transcript${i}`,
+                  ...t
+                }))}
+              />
+            </Col>
+          </Row>
+        </div>
+        <div className="sub-section">
+          <h3>Ensemble Transcripts</h3>
+          <Row>
+            <Col md={12}>
+              <Table
+                size="middle"
+                bordered={true}
+                pagination={false}
+                columns={TRANSCRIPT}
+                dataSource={result.ensembleTranscripts.map((t, i) => ({
+                  key: `ens_transcript${i}`,
+                  ...t
+                }))}
+              />
+            </Col>
+          </Row>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderClinicalInterpretation = () => (
-    <div className="result-section">
+    <div className="result-section" id="clinvar">
       <div className="section-header">
         <h2>Clinical Interpretation</h2>
       </div>
@@ -441,14 +521,14 @@ function AnnotationResult({ }) {
                   <td>
                     {result.clinvar.pumeds
                       ? result.clinvar.pumeds.map(p => (
-                        <a
-                          key={p}
-                          href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
-                          style={{ display: "block" }}
-                        >
-                          {p}
-                        </a>
-                      ))
+                          <a
+                            key={p}
+                            href={`https://www.ncbi.nlm.nih.gov/pubmed/?term=${p}`}
+                            style={{ display: "block" }}
+                          >
+                            {p}
+                          </a>
+                        ))
                       : null}
                   </td>
                 </tr>
@@ -460,70 +540,98 @@ function AnnotationResult({ }) {
     </div>
   );
 
-  const renderPopulationFrequency = () =>
-    populations.length ? (
-      <div className="result-section">
-        <div className="section-header">
-          <h2>Population Frequency</h2>
-        </div>
-        <div className="content">
-          <Row>
-            <Col md={12}>
-              {populations.filter(p => p.database === "thousandGenome").length >
-                0 && (
-                  <div className="sub-header">
-                    <h3>Thousand Genome</h3>
-                    <Table
-                      size="middle"
-                      bordered={true}
-                      columns={POPULATION_FREQUENCY}
-                      dataSource={populations.filter(
-                        p => p.database === "thousandGenome"
-                      )}
-                    />
-                  </div>
-                )}
-              {populations.filter(p => p.database === "gnomadExome").length >
-                0 && (
-                  <div className="sub-header">
-                    <h3>Gnomad Exome</h3>
-                    <Table
-                      size="middle"
-                      bordered={true}
-                      columns={POPULATION_FREQUENCY}
-                      dataSource={populations.filter(
-                        p => p.database === "gnomadExome"
-                      )}
-                    />
-                  </div>
-                )}
-            </Col>
-          </Row>
-        </div>
+  const renderPopulationFrequency = () => (
+    <div className="result-section" id="population">
+      <div className="section-header">
+        <h2>Population Frequency</h2>
       </div>
-    ) : null;
+      <div className="content">
+        <Row>
+          <Col md={12}>
+            {populations.filter(p => p.database === "thousandGenome").length >
+              0 && (
+              <div className="sub-header">
+                <h3>Thousand Genome</h3>
+                <Table
+                  pagination={false}
+                  size="middle"
+                  bordered={true}
+                  columns={POPULATION_FREQUENCY}
+                  dataSource={populations.filter(
+                    p => p.database === "thousandGenome"
+                  )}
+                />
+              </div>
+            )}
+            <br />
+            {populations.filter(p => p.database === "gnomadExome").length >
+              0 && (
+              <div className="sub-header">
+                <h3>Gnomad Exome</h3>
+                <Table
+                  pagination={false}
+                  size="middle"
+                  bordered={true}
+                  columns={POPULATION_FREQUENCY}
+                  dataSource={populations.filter(
+                    p => p.database === "gnomadExome"
+                  )}
+                />
+              </div>
+            )}
+            <br />
+            {populations.filter(p => p.database === "gnomadGenome").length >
+              0 && (
+              <div className="sub-header">
+                <h3>Gnomad Genome</h3>
+                <Table
+                  size="middle"
+                  bordered={true}
+                  pagination={false}
+                  columns={[
+                    {
+                      title: "Population",
+                      dataIndex: "population",
+                      key: "population"
+                    },
+                    {
+                      title: "AF",
+                      dataIndex: "af",
+                      key: "af"
+                    }
+                  ]}
+                  dataSource={populations.filter(
+                    p => p.database === "gnomadGenome"
+                  )}
+                />
+              </div>
+            )}
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
 
-  const renderFunctionalPrediction = () =>
-    result.score ? (
-      <div className="result-section">
-        <div className="section-header">
-          <h2>Functional Prediction</h2>
-        </div>
-        <div className="content">
-          <Table
-            size="middle"
-            bordered={true}
-            columns={FUNCTIONAL_PREDICTION}
-            dataSource={Object.keys(result.scores).map((k, i) => ({
-              key: `key${i}`,
-              tool: k,
-              score: result.scores[k].score || "-",
-              prediction: result.scores[k].prediction || "-"
-            }))}
-          />
-        </div>
+  const renderFunctionalPrediction = () => (
+    <div className="result-section" id="functional_prediction">
+      <div className="section-header">
+        <h2>Functional Prediction</h2>
       </div>
-    ) : null;
+      <div className="content">
+        <Table
+          size="middle"
+          bordered={true}
+          columns={FUNCTIONAL_PREDICTION}
+          dataSource={Object.keys(result.scores).map((k, i) => ({
+            key: `key${i}`,
+            tool: k,
+            score: result.scores[k].score || "-",
+            prediction: result.scores[k].prediction || "-"
+          }))}
+        />
+      </div>
+    </div>
+  );
 
   const renderFetching = () => (
     <div className="content-wrapper">
@@ -557,24 +665,50 @@ function AnnotationResult({ }) {
     <>
       {console.log("result", result)}
       <div className="navigation-wrapper">
-        <Tabs defaultActiveKey="1">
-          <Tabs.TabPane tab="Summary" key="1"></Tabs.TabPane>
-          <Tabs.TabPane tab="ACMG Classification" key="2"></Tabs.TabPane>
-          <Tabs.TabPane tab="Clinical interpretation" key="3"></Tabs.TabPane>
-          <Tabs.TabPane tab="Population frequency" key="4"></Tabs.TabPane>
-          <Tabs.TabPane tab="Functional prediction" key="5"></Tabs.TabPane>
+        <Tabs defaultActiveKey="1" onChange={navigateToSection}>
+          <Tabs.TabPane tab="Summary" key="summary"></Tabs.TabPane>
+          <Tabs.TabPane tab="ACMG Classification" key="acmg"></Tabs.TabPane>
+          {result.refSeqTranscripts.length > 0 &&
+            result.ensembleTranscripts.length > 0 && (
+              <Tabs.TabPane tab="Transcripts" key="transcripts"></Tabs.TabPane>
+            )}
+          {result.clinvar &&
+            result.clinvar.annotation &&
+            result.clinvar.annotation.diseaseInfos && (
+              <Tabs.TabPane
+                tab="Clinical interpretation"
+                key="clinvar"
+              ></Tabs.TabPane>
+            )}
+          {populations !== undefined && populations.length > 0 && (
+            <Tabs.TabPane
+              tab="Population frequency"
+              key="population"
+            ></Tabs.TabPane>
+          )}
+          {result.score && (
+            <Tabs.TabPane
+              tab="Functional prediction"
+              key="functional_prediction"
+            ></Tabs.TabPane>
+          )}
         </Tabs>
       </div>
       <div className="content-wrapper">
         {renderSummary()}
         {result.acmg && renderACMGclassification()}
+        {result.refSeqTranscripts.length > 0 &&
+          result.ensembleTranscripts.length > 0 &&
+          renderTranscripts()}
         {result.clinvar &&
           result.clinvar.annotation &&
           result.clinvar.annotation.diseaseInfos &&
           renderClinicalInterpretation()}
-        {populations !== undefined && renderPopulationFrequency()}
+        {populations !== undefined &&
+          populations.length > 0 &&
+          renderPopulationFrequency()}
         <Row>
-          <Col md={12}>{renderFunctionalPrediction()}</Col>
+          <Col md={12}>{result.score && renderFunctionalPrediction()}</Col>
         </Row>
       </div>
     </>
@@ -590,10 +724,10 @@ function AnnotationResult({ }) {
       ) : matchingIDs.length ? (
         renderMatchingIDs()
       ) : (
-              <div className="content-wrapper">
-                <h2>Start by seaching for a gene or a variant</h2>
-              </div>
-            )}
+        <div className="content-wrapper">
+          <h2>Start by seaching for a gene or a variant</h2>
+        </div>
+      )}
       {}
     </>
   );

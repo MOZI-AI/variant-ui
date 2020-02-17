@@ -19,11 +19,11 @@ const GeneViewerColumns = [
     dataIndex: "variant",
     key: "variant"
   },
-  {
-    title: "HGVS nomination",
-    dataIndex: "HGVS",
-    key: "HGVS"
-  },
+  // {
+  //   title: "HGVS nomination",
+  //   dataIndex: "HGVS",
+  //   key: "HGVS"
+  // },
   {
     title: "rsID",
     dataIndex: "rsID",
@@ -33,10 +33,16 @@ const GeneViewerColumns = [
     title: "InterVar.class",
     dataIndex: "interVar",
     key: "interVar",
-    sorter: (a, b) =>
-      InterVarClassOrder[a.acmg.verdict.toLowerCase()] -
-      InterVarClassOrder[b.acmg.verdict.toLowerCase()],
-    sortDirections: ["descend"]
+    sorter: (a, b) => {
+      console.log(a);
+      return (
+        InterVarClassOrder[a.interVar.toLowerCase()] -
+        InterVarClassOrder[b.interVar.toLowerCase()]
+      );
+    },
+    defaultSortOrder: "descend",
+    sortDirections: ["descend"],
+    render: verdict => <Verdict verdict={verdict} />
   },
   {
     title: "ExonicFunc",
@@ -48,11 +54,11 @@ const GeneViewerColumns = [
     dataIndex: "disease",
     key: "disease"
   },
-  {
-    title: "Phenotype",
-    dataIndex: "phenotype",
-    key: "phenotype"
-  },
+  // {
+  //   title: "Phenotype",
+  //   dataIndex: "phenotype",
+  //   key: "phenotype"
+  // },
   {
     title: "Disease in OrhpaNet",
     dataIndex: "orphanet",
@@ -62,27 +68,27 @@ const GeneViewerColumns = [
     title: "OMIM",
     dataIndex: "omim",
     key: "omim"
-  },
-  {
-    title: "Phenotype_MIM",
-    dataIndex: "Phenotype_MIM",
-    key: "Phenotype_MIM"
-  },
-  {
-    title: "ExAc.AF (AC/AN, population)",
-    dataIndex: "exac",
-    key: "exac"
-  },
-  {
-    title: "Polyphen2.Conservation",
-    dataIndex: "polyphen",
-    key: "polyphen"
-  },
-  {
-    title: "Polyphen.Score",
-    dataIndex: "score",
-    key: "score"
   }
+  // {
+  //   title: "Phenotype_MIM",
+  //   dataIndex: "Phenotype_MIM",
+  //   key: "Phenotype_MIM"
+  // }
+  // {
+  //   title: "ExAc.AF (AC/AN, population)",
+  //   dataIndex: "exac",
+  //   key: "exac"
+  // },
+  // {
+  //   title: "Polyphen2.Conservation",
+  //   dataIndex: "polyphen",
+  //   key: "polyphen"
+  // },
+  // {
+  //   title: "Polyphen.Score",
+  //   dataIndex: "score",
+  //   key: "score"
+  // }
 ];
 
 const GeneViewer = props => {
@@ -147,21 +153,21 @@ const GeneViewer = props => {
             <Table
               pagination={{ pageSize: 3 }}
               columns={GeneViewerColumns}
-              dataSource={result.variants.map((v, j) => ({
+              dataSource={result.map((v, j) => ({
                 key: `variant${j}`,
                 variant: (
                   <Link
                     to={`/variant/${v.hgvs}`}
                   >{`${v.chrom}:${v.pos}:${v.ref}/${v.alt}`}</Link>
                 ),
-                HGVS: v.effect ? v.effect.hgvsNomination : "-",
+                // HGVS: v.effect ? v.effect.hgvsNomination : "-",
                 rsID: v.id || "-",
-                interVar: <Verdict verdict={v.acmg.verdict} />,
+                interVar: v.acmg.verdict,
                 exonic: v.acmg.exonicFunction,
                 disease: v.acmg.diseaseInfos
                   ? v.acmg.diseaseInfos.map(d => d.diseaseName).join(" , ")
                   : "-",
-                phenotype: "?",
+                // phenotype: "?",
                 orphanet: v.acmg.diseaseInfos
                   ? v.acmg.diseaseInfos.map(d => d.diseaseId).join(" , ")
                   : "-",
@@ -172,7 +178,7 @@ const GeneViewer = props => {
                       .map((o, i) => (
                         <Fragment key={`omim${i}`}>
                           <a
-                            target="_blank"
+                            target="_blanke"
                             href={`https://omim.org/entry/${o}`}
                           >
                             {o}
@@ -183,11 +189,7 @@ const GeneViewer = props => {
                   </>
                 ) : (
                   "-"
-                ),
-                Phenotype_MIM: "?",
-                exac: "?",
-                polyphen: "?",
-                score: "?"
+                )
               }))}
             />
           </>

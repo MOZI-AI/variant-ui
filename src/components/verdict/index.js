@@ -9,8 +9,18 @@ const ColorProfile = {
   benign: "#389e0d"
 };
 
-const Verdict = ({ verdict }) => (
-  <Tag color={ColorProfile[verdict.toLowerCase()]}>{verdict}</Tag>
+const style = {
+  large: {
+    fontSize: "1.2rem",
+    padding: "5px 10px"
+  },
+  small: {}
+};
+
+const Verdict = ({ verdict, size = "small" }) => (
+  <Tag style={style[size]} color={ColorProfile[verdict.toLowerCase()]}>
+    {verdict}
+  </Tag>
 );
 
 export default Verdict;
