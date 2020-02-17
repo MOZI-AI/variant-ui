@@ -180,6 +180,7 @@ function AnnotationResult({}) {
         <h2>Summary</h2>
       </div>
       <div className="content">
+        <Visualizer />
         <table>
           <tbody>
             <tr>
@@ -460,7 +461,15 @@ function AnnotationResult({}) {
                 columns={TRANSCRIPT}
                 dataSource={result.refSeqTranscripts.map((t, i) => ({
                   key: `ref_transcript${i}`,
-                  ...t
+                  ...t,
+                  transcriptId: (
+                    <a
+                      target="_blank"
+                      href={`https://www.ncbi.nlm.nih.gov/nuccore/${t.transcriptId}`}
+                    >
+                      {t.transcriptId}
+                    </a>
+                  )
                 }))}
               />
             </Col>
@@ -477,7 +486,15 @@ function AnnotationResult({}) {
                 columns={TRANSCRIPT}
                 dataSource={result.ensembleTranscripts.map((t, i) => ({
                   key: `ens_transcript${i}`,
-                  ...t
+                  ...t,
+                  transcriptId: (
+                    <a
+                      target="_blank"
+                      href={`http://grch37.ensembl.org/Homo_sapiens/Transcript/Summary?t=${t.transcriptId}`}
+                    >
+                      {t.transcriptId}
+                    </a>
+                  )
                 }))}
               />
             </Col>
