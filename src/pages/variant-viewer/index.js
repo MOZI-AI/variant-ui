@@ -98,6 +98,10 @@ function AnnotationResult({}) {
     if (/^rs[0-9]*$/.test(t)) {
       return `/annotate/variant/${t.toLowerCase()}`;
     }
+    //Change Str
+    else if(/(?:chr)?([\d|XYMTxymt]+):(\d+):([GCTAgcta]+)*:([GCTAgcta]+)*/.test(t)) {
+      return `/annotate/variant/change/${t}`
+    }
     // HGVS Id
     else if (
       /(chr)?([\d|XYMTxymt]+):[gG]\.(\d+)([GCTAgcta])?>([GCTAgcta])/.test(t) ||

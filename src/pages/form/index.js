@@ -55,12 +55,9 @@ const AnnotationForm = ({ onSubmit }) => {
 
         <div className="examples">
           <h3>Examples</h3>
-          Gene: <Link to="gene/PAH">PAH</Link>,
-          <Link to="/gene/NM_000277">NM_000277</Link>
+          Gene: <Link to="gene/PAH">PAH</Link>
           <br />
-          Variant: <Link to="/variant/ X:153760914:G/C"> X:153760914:G/C</Link>,
-          <Link to="/variant/12:103306579">12:103306579</Link>,
-          <Link to="/variant/rs118092776 ">rs118092776 </Link>
+            Variant: <Link to="/variant/2:47703538:C:T">2:47703538:C:T</Link>,  <Link to={"/variant/13:32953985:AGTAAA:"}>22:30035183:AGTAAA:</Link>,  <Link to="/variant/rs118092776 ">rs118092776 </Link>
         </div>
       </div>
     </div>
