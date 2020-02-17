@@ -39,22 +39,22 @@ const POPULATION_FREQUENCY = [
     key: "population"
   },
   {
-    title: "homAlt",
+    title: "HomAlt",
     dataIndex: "homAlt",
     key: "homAlt"
   },
   {
-    title: "af",
+    title: "AF",
     dataIndex: "af",
     key: "af"
   },
   {
-    title: "ac",
+    title: "AC",
     dataIndex: "ac",
     key: "ac"
   },
   {
-    title: "an",
+    title: "AN",
     dataIndex: "an",
     key: "an"
   }
@@ -167,8 +167,8 @@ function AnnotationResult({}) {
               <td>{result.gene}</td>
             </tr>
             <tr>
-              <td>HGVS nomination</td>
-              <td>{result.effect ? result.effect.hgvsNomination : "-"}</td>
+              <td>Type</td>
+              <td>{result.bioType ? result.bioType : "-"}</td>
             </tr>
           </tbody>
         </table>
@@ -199,7 +199,7 @@ function AnnotationResult({}) {
                     <Col md={12}>
                       <Statistic
                         title="ExonicFunc"
-                        value={result.acmg ? result.acmg.exonicFunction : "-"}
+                        value={result.acmg ? result.exonicFunction : "-"}
                       />
                     </Col>
                   </Row>
@@ -492,6 +492,20 @@ function AnnotationResult({}) {
                     columns={POPULATION_FREQUENCY}
                     dataSource={populations.filter(
                       p => p.database === "gnomadExome"
+                    )}
+                  />
+                </div>
+              )}
+              {populations.filter(p => p.database === "gnomadGenome").length >
+                0 && (
+                <div className="sub-header">
+                  <h3>Gnomad Genome</h3>
+                  <Table
+                    size="middle"
+                    bordered={true}
+                    columns={POPULATION_FREQUENCY}
+                    dataSource={populations.filter(
+                      p => p.database === "gnomadGenome"
                     )}
                   />
                 </div>

@@ -55,21 +55,21 @@ const GeneViewerColumns = [
     dataIndex: "Phenotype_MIM",
     key: "Phenotype_MIM"
   },
-  {
-    title: "ExAc.AF (AC/AN, population)",
-    dataIndex: "exac",
-    key: "exac"
-  },
-  {
-    title: "Polyphen2.Conservation",
-    dataIndex: "polyphen",
-    key: "polyphen"
-  },
-  {
-    title: "Polyphen.Score",
-    dataIndex: "score",
-    key: "score"
-  }
+  // {
+  //   title: "ExAc.AF (AC/AN, population)",
+  //   dataIndex: "exac",
+  //   key: "exac"
+  // },
+  // {
+  //   title: "Polyphen2.Conservation",
+  //   dataIndex: "polyphen",
+  //   key: "polyphen"
+  // },
+  // {
+  //   title: "Polyphen.Score",
+  //   dataIndex: "score",
+  //   key: "score"
+  // }
 ];
 
 const GeneViewer = props => {
@@ -133,7 +133,7 @@ const GeneViewer = props => {
             <h2>Variants for {id}</h2>
             <Table
               columns={GeneViewerColumns}
-              dataSource={result.variants.map((v, j) => ({
+              dataSource={result.map((v, j) => ({
                 key: `variant${j}`,
                 variant: (
                   <Link
@@ -143,7 +143,7 @@ const GeneViewer = props => {
                 HGVS: v.effect ? v.effect.hgvsNomination : "-",
                 rsID: v.id || "-",
                 interVar: v.acmg.verdict,
-                exonic: v.acmg.exonicFunction,
+                exonic: v.exonicFunction,
                 disease: v.acmg.diseaseInfos
                   ? v.acmg.diseaseInfos.map(d => d.diseaseName).join(" , ")
                   : "-",
@@ -158,7 +158,7 @@ const GeneViewer = props => {
                       .map((o, i) => (
                         <Fragment key={`omim${i}`}>
                           <a
-                            target="_blank"
+                            target="_blanke"
                             href={`https://omim.org/entry/${o}`}
                           >
                             {o}
@@ -169,11 +169,7 @@ const GeneViewer = props => {
                   </>
                 ) : (
                   "-"
-                ),
-                Phenotype_MIM: "?",
-                exac: "?",
-                polyphen: "?",
-                score: "?"
+                )
               }))}
             />
           </>
