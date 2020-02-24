@@ -10,7 +10,7 @@ const InterVarClassOrder = {
   "likely pathogenic": 4,
   "likely benign": 3,
   benign: 2,
- "uncertain significance": 1
+  "uncertain significance": 1
 };
 
 const GeneViewerColumns = [
@@ -151,7 +151,11 @@ const GeneViewer = props => {
           <>
             <h2>Variants for {id}</h2>
             <Table
-              pagination={{ pageSize: 3 }}
+              pagination={{
+                defaultPageSize: 3,
+                showSizeChanger: true,
+                pageSizeOptions: [3, 5, 10, 15, 20]
+              }}
               columns={GeneViewerColumns}
               dataSource={result.map((v, j) => ({
                 key: `variant${j}`,
