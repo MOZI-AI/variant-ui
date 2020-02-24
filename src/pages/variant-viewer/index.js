@@ -9,7 +9,8 @@ import {
   Tag,
   Tabs,
   message,
-  Typography
+  Typography,
+  Tooltip
 } from "antd";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
@@ -44,22 +45,26 @@ const POPULATION_FREQUENCY = [
   {
     title: "HomAlt",
     dataIndex: "homAlt",
-    key: "homAlt"
+    key: "homAlt",
+    render: count => (count < 0 ? "N/A" : count)
   },
   {
     title: "AF",
     dataIndex: "af",
-    key: "af"
+    key: "af",
+    render: count => (count < 0 ? "N/A" : count)
   },
   {
     title: "AC",
     dataIndex: "ac",
-    key: "ac"
+    key: "ac",
+    render: count => (count < 0 ? "N/A" : count)
   },
   {
     title: "AN",
     dataIndex: "an",
-    key: "an"
+    key: "an",
+    render: count => (count < 0 ? "N/A" : count)
   }
 ];
 
@@ -124,6 +129,7 @@ function AnnotationResult({}) {
       .get(constructURL(id.trim()))
       .then(function(response) {
         // handle success
+        console.log("result", response.data);
         setResult(response.data);
       })
       .catch(function(error) {
@@ -297,17 +303,52 @@ function AnnotationResult({}) {
               <tr>
                 <td>Population data</td>
                 <td>
-                  {result.acmg["bs"][0] === 1 && <Tag color="#722ed1">BS1</Tag>}
-                  {result.acmg["bs"][1] === 1 && <Tag color="#722ed1">BS2</Tag>}
-                  {result.acmg["ba1"] === 1 && <Tag color="#722ed1">BA1</Tag>}
+                  {result.acmg["bs"][0] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="MAF is too high for disorder "
+                    >
+                      <Tag color="#722ed1">BS1</Tag>
+                    </Tooltip>
+                  )}
+                  {result.acmg["bs"][1] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Observation in controls inconsistent with disease penetrance "
+                    >
+                      <Tag color="#722ed1">BS2</Tag>{" "}
+                    </Tooltip>
+                  )}
+                  {result.acmg["ba1"] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="MAF is too high for disorder "
+                    >
+                      <Tag color="#722ed1">BA1</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td></td>
                 <td>
-                  {result.acmg["pm"][1] === 1 && <Tag color="#faad14">PM2</Tag>}
+                  {result.acmg["pm"][1] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Absent in population databases "
+                    >
+                      <Tag color="#faad14">PM2</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["ps"][3] === 1 && <Tag color="#fa541c">PS4</Tag>}
+                  {result.acmg["ps"][3] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Prevalence in affecteds statistically increased over controls "
+                    >
+                      <Tag color="#fa541c">PS4</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
               </tr>
@@ -315,53 +356,155 @@ function AnnotationResult({}) {
                 <td>Computation data</td>
                 <td></td>
                 <td>
-                  {result.acmg["bp"][3] === 1 && <Tag color="#2f54eb">BP4</Tag>}
-                  {result.acmg["bp"][0] === 1 && <Tag color="#2f54eb">BP1</Tag>}
-                  {result.acmg["bp"][6] === 1 && <Tag color="#2f54eb">BP7</Tag>}
-                  {result.acmg["bp"][2] === 1 && <Tag color="#2f54eb">BP3</Tag>}
+                  {result.acmg["bp"][3] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Multiple lines of computational evidence suggest no impact on gene /gene product "
+                    >
+                      <Tag color="#2f54eb">BP4</Tag>
+                    </Tooltip>
+                  )}
+                  {result.acmg["bp"][0] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Missense in gene where only truncating cause disease "
+                    >
+                      <Tag color="#2f54eb">BP1</Tag>
+                    </Tooltip>
+                  )}
+                  {result.acmg["bp"][6] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Silent variant with non predicted splice impact "
+                    >
+                      <Tag color="#2f54eb">BP7</Tag>
+                    </Tooltip>
+                  )}
+                  {result.acmg["bp"][2] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="In-frame indels in repeat w/out known function "
+                    >
+                      <Tag color="#2f54eb">BP3</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {" "}
-                  {result.acmg["pp"][2] === 1 && <Tag color="#52c41a">PP3</Tag>}
+                  {result.acmg["pp"][2] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Multiple lines of computational evidence support a deleterious effect on the gene /gene product "
+                    >
+                      <Tag color="#52c41a">PP3</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["pm"][4] === 1 && <Tag color="#faad14">PM5</Tag>}
-                  {result.acmg["pm"][3] === 1 && <Tag color="#faad14">PM4</Tag>}
+                  {result.acmg["pm"][4] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Novel missense change at an amino acid residue where a different pathogenic missense change has been seen before "
+                    >
+                      <Tag color="#faad14">PM5</Tag>
+                    </Tooltip>
+                  )}
+                  {result.acmg["pm"][3] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Protein length changing variant "
+                    >
+                      <Tag color="#faad14">PM4</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["ps"][0] === 1 && <Tag color="#fa541c">PS1</Tag>}
+                  {result.acmg["ps"][0] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Same amino acid change as an established pathogenic variant "
+                    >
+                      <Tag color="#fa541c">PS1</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["pvs1"] === 1 && <Tag color="#f5222d">PSV1</Tag>}
+                  {result.acmg["pvs1"] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Predicted null variant in a gene where LOF is a known mechanism of disease "
+                    >
+                      <Tag color="#f5222d">PSV1</Tag>
+                    </Tooltip>
+                  )}
                 </td>
               </tr>
               <tr>
                 <td>Functional data</td>
                 <td>
-                  {result.acmg["bs"][2] === 1 && <Tag color="#722ed1">BS3</Tag>}
+                  {result.acmg["bs"][2] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Well-established functional studies show no deleterious effect "
+                    >
+                      <Tag color="#722ed1">BS3</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td>
-                  {result.acmg["pp"][1] === 1 && <Tag color="#52c41a">PP2</Tag>}
+                  {result.acmg["pp"][1] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Missense in gene with low rate of benign missense variants and path. missenses common "
+                    >
+                      <Tag color="#52c41a">PP2</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["pm"][0] === 1 && <Tag color="#faad14">PM1</Tag>}
+                  {result.acmg["pm"][0] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Mutational hot spot or well-studied functional domain without benign variation "
+                    >
+                      <Tag color="#faad14">PM1</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {" "}
-                  {result.acmg["ps"][2] === 1 && <Tag color="#fa541c">PS3</Tag>}
+                  {result.acmg["ps"][2] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Well-established functional studies show a deleterious effect "
+                    >
+                      <Tag color="#fa541c">PS3</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
               </tr>
               <tr>
                 <td>Segregation data</td>
                 <td>
-                  {result.acmg["bs"][3] === 1 && <Tag color="#722ed1">BS4</Tag>}
+                  {result.acmg["bs"][3] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Nonsegregation with disease "
+                    >
+                      <Tag color="#722ed1">BS4</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td>
-                  {" "}
-                  {result.acmg["pp"][0] === 1 && <Tag color="#52c41a">PP1</Tag>}
+                  {result.acmg["pp"][0] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Cosegregation with disease in multiple affected family members "
+                    >
+                      <Tag color="#52c41a">PP1</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td></td>
@@ -373,10 +516,24 @@ function AnnotationResult({}) {
                 <td></td>
                 <td></td>
                 <td>
-                  {result.acmg["pm"][5] === 1 && <Tag color="#faad14">PM6</Tag>}
+                  {result.acmg["pm"][5] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="De novo (without paternity & maternity confirmed) "
+                    >
+                      <Tag color="#faad14">PM6</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["ps"][1] === 1 && <Tag color="#fa541c">PS2</Tag>}
+                  {result.acmg["ps"][1] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="De novo (paternity and maternity confirmed) "
+                    >
+                      <Tag color="#fa541c">PS2</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
               </tr>
@@ -384,11 +541,25 @@ function AnnotationResult({}) {
                 <td>Allele data</td>
                 <td></td>
                 <td>
-                  {result.acmg["bp"][1] === 1 && <Tag color="#2f54eb">BP2</Tag>}
+                  {result.acmg["bp"][1] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Observed in trans with a dominant variant BP2 . Observed in cis with a pathogenic variant"
+                    >
+                      <Tag color="#2f54eb">BP2</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td>
-                  {result.acmg["pm"][2] === 1 && <Tag color="#faad14">PM3</Tag>}
+                  {result.acmg["pm"][2] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="For recessive disorders, detected in trans with a pathogenic variant"
+                    >
+                      <Tag color="#faad14">PM3</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td></td>
@@ -397,11 +568,24 @@ function AnnotationResult({}) {
                 <td>Other database</td>
                 <td></td>
                 <td>
-                  {result.acmg["bp"][5] === 1 && <Tag color="#2f54eb">BP6</Tag>}
+                  {result.acmg["bp"][5] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Reputable source w/out shared data = benign"
+                    >
+                      <Tag color="#2f54eb">BP6</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {" "}
-                  {result.acmg["pp"][4] === 1 && <Tag color="#52c41a">PP5</Tag>}
+                  {result.acmg["pp"][4] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Reputable source = pathogenic"
+                    >
+                      <Tag color="#52c41a">PP5</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td></td>
@@ -411,10 +595,24 @@ function AnnotationResult({}) {
                 <td>Other data</td>
                 <td></td>
                 <td>
-                  {result.acmg["bp"][4] === 1 && <Tag color="#2f54eb">BP5</Tag>}
+                  {result.acmg["bp"][4] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Found in case with an alternate cause"
+                    >
+                      <Tag color="#2f54eb">BP5</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td>
-                  {result.acmg["pp"][3] === 1 && <Tag color="#52c41a">PP4</Tag>}
+                  {result.acmg["pp"][3] === 1 && (
+                    <Tooltip
+                      placement="bottom"
+                      title="Patient’s phenotype or FH highly specific for gene"
+                    >
+                      <Tag color="#52c41a">PP4</Tag>
+                    </Tooltip>
+                  )}
                 </td>
                 <td></td>
                 <td></td>
@@ -609,12 +807,14 @@ function AnnotationResult({}) {
                     {
                       title: "Population",
                       dataIndex: "population",
-                      key: "population"
+                      key: "population",
+                      render: count => (count < 0 ? "N/A" : count)
                     },
                     {
                       title: "AF",
                       dataIndex: "af",
-                      key: "af"
+                      key: "af",
+                      render: count => (count < 0 ? "N/A" : count)
                     }
                   ]}
                   dataSource={populations.filter(
@@ -636,6 +836,7 @@ function AnnotationResult({}) {
       </div>
       <div className="content">
         <Table
+          pagination={{ hideOnSinglePage: true }}
           size="middle"
           bordered={true}
           columns={FUNCTIONAL_PREDICTION}
@@ -725,7 +926,7 @@ function AnnotationResult({}) {
           populations.length > 0 &&
           renderPopulationFrequency()}
         <Row>
-          <Col md={12}>{result.score && renderFunctionalPrediction()}</Col>
+          <Col md={12}>{result.scores && renderFunctionalPrediction()}</Col>
         </Row>
       </div>
     </>
