@@ -8,9 +8,9 @@ import Verdict from "../../components/verdict";
 const InterVarClassOrder = {
   pathogenic: 5,
   "likely pathogenic": 4,
-  "likely benign": 3,
-  benign: 2,
-  "uncertain significance": 1
+  "uncertain significance": 3,
+  "likely benign": 2,
+  benign: 1
 };
 
 const GeneViewerColumns = [
